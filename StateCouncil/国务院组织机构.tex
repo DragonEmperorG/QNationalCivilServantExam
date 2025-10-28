@@ -13,9 +13,11 @@
 \geometry{left=0mm,right=0mm,top=0mm,bottom=0mm}
 % https://latexstudio.net/archives/7676 小四号 12pt 4.2175mm
 \usepackage{ctex}
-\setmainfont{Times New Roman}
+%\setmainfont{Times New Roman}
+\setmainfont{Arial}
 
 \usepackage{tikz}
+\usetikzlibrary{backgrounds}
 \usetikzlibrary{calc}
 \usetikzlibrary{fit}
 \usetikzlibrary{math}
@@ -25,13 +27,15 @@
 
 \usepackage[dvipsnames]{xcolor}
 % https://waldyrious.net/viridis-palette-generator/
+\definecolor{PrimaryColor}{HTML}{074984}
+\definecolor{SurfaceContainerColor}{HTML}{f7f7f7}
 \definecolor{MinisterialLevelColor}{HTML}{ea102c}
 \definecolor{ViceMinisterialLevelColor}{HTML}{fcce41}
 
 \usepackage{adjustbox}
 
-% https://developer.riotgames.com/docs/lol#data-dragon
-
+% https://www.gov.cn/zhengce/content/2023-03/20/content_5747309.htm  国发〔2023〕5号 国务院关于机构设置的通知
+% https://www.gov.cn/zhengce/content/2023-03/20/content_5747311.htm  国发〔2023〕6号 国务院关于部委管理的国家局设置的通知
 \begin{document}
 
     \newpage
@@ -42,28 +46,47 @@
 		\itemIntervalLength= 0.6;
 		\cPaperWidth = 21;
 		\cPaperHeight = 29.7;
-		\cMinisterialLevelEmblemHeight = 0.8;
-		\cViceMinisterialLevelEmblemHeight = 0.6; 
+		\cInnerLeft = 2;
+		\cInnerRight = \cInnerLeft;
+		\cSectionAboveSkip = 0.2;
+		\cMinisterialLevelEmblemWidth = 0.80;
+		\cMinisterialLevelEmblemHeight = 0.80;
+		\cMinisterialIndentation = 0.5;
+		\cMinisterialTextLeft = \cMinisterialIndentation + \cMinisterialLevelEmblemWidth;
+		\cViceMinisterialLevelEmblemWidth = 0.7;
+		\cViceMinisterialLevelEmblemHeight = 0.7;
+		\cViceMinisterialIndentation = 0.8;
+		\cViceMinisterialColumnLeftTextLeft = \cMinisterialTextLeft;
+		\cViceMinisterialColumnRightTextLeft = \cPaperWidth / 2 + \cViceMinisterialLevelEmblemWidth;
 	}
    	
  	\tikzset{
-		style0/.style={
+		cChapterTextStyle/.style={
 			align=center,
-			font=\bfseries\fontsize{14}{14}\selectfont,
+			font=\heiti\fontsize{14bp}{14bp}\selectfont,
 		},
-		style1/.style={
+		cSectionTextStyle/.style={
 			align=left,
-			font=\bfseries\fontsize{12}{12}\selectfont
+			font=\heiti\fontsize{12bp}{12bp}\selectfont,
+			text=white,
+			fill=PrimaryColor,
+			inner xsep = \cMinisterialIndentation cm,
+			inner ysep = 0.2 cm,
+			rounded corners=1.6 pt,
   		},
+		cSectionBoxStyle/.style={
+		    fill=SurfaceContainerColor
+		},
      	% 部级
 		cMinistryIconStyle/.style={
-            text width=0.8 cm,
-            text height=0.8 cm
+		    align=center,
+            minimum width=\cMinisterialLevelEmblemWidth cm,
+            minimum height=\cMinisterialLevelEmblemHeight cm
 		},
 		cMinistryTextStyle/.style={
 			align=left,
-			font=\fontsize{10.5}{10.5}\selectfont,
-            text height=0.8 cm
+			font=\fontsize{10.5bp}{10.5bp}\selectfont,
+            minimum height=\cMinisterialLevelEmblemHeight cm
 		},
 		cMinistryBoxStyle/.style={
 		    draw=MinisterialLevelColor,
@@ -71,14 +94,14 @@
 		},
 		% 副部级
 		cViceMinistryIconStyle/.style={
-            text width=0.6 cm,
-            text height=0.6 cm
-  			},
+            minimum width=\cViceMinisterialLevelEmblemWidth cm,
+            minimum height=\cViceMinisterialLevelEmblemHeight cm
+		},
 		cViceMinistryTextStyle/.style={
-  				align=left,
-  				font=\fontsize{9}{9}\selectfont,
-  				text height=0.6 cm
-  			},
+			align=left,
+			font=\fontsize{9bp}{9bp}\selectfont,
+			minimum height=\cViceMinisterialLevelEmblemHeight cm
+		},
 		cViceMinistryBoxStyle/.style={
 		    draw=ViceMinisterialLevelColor,
 		    inner sep=0 cm,
@@ -88,7 +111,11 @@
 		    fill=white,
 		    inner sep=0.02 cm,
             align=left,
-            font=\bfseries\fontsize{5}{5}\selectfont
+            font=\bfseries\fontsize{5bp}{5bp}\selectfont
+		},
+		cPrimaryLineStyle/.style={
+			line width=1.6pt,
+			color=PrimaryColor
 		},
 	} 	
        		
@@ -96,149 +123,139 @@
 
 	    \fill [white] (current page.north west) rectangle (current page.south east);
 	    
-   		\draw[dashed] (21, 0) -- (21, -29.7) -- (0, -29.7); 
+   		 \draw[dashed] (21, 0) -- (21, -29.7) -- (0, -29.7); 
+   		
+	    \coordinate (CPageNorth) at (current page.north);
+	    \coordinate [right=\cInnerLeft cm of current page.north west] (CBodyLeft);
+	    \coordinate [right=\cMinisterialTextLeft cm of CBodyLeft] (CMinistryLeft);
+	    \coordinate [right=\cViceMinisterialColumnLeftTextLeft cm of CBodyLeft] (CViceMinistryColumn1Left);
+	    \coordinate [right=\cViceMinisterialColumnRightTextLeft cm of current page.north west] (CViceMinistryColumn2Left);
+	    \coordinate [left=\cInnerRight cm of current page.north east] (CBodyRight);
+		\coordinate [below=2 cm of current page.north west] (CBodyTop);
    		
 		\coordinate [below=1 cm of current page.north] (CSC);
-		\node [below=0 cm of CSC,style0] (NSC) at(CSC) {中华人民共和国国务院\\State Council of the People's Republic of China};
+		\node [below=0 cm of CSC,cChapterTextStyle] (NSC) at(CSC) {中华人民共和国国务院\\State Council of the People's Republic of China};
 	    
-	    % 
-		\coordinate [below right=3 cm and 0.5 cm of current page.north west] (CGOSC);
-		\node [right=0 cm of CGOSC,style1] (NGOSC) {中华人民共和国国务院办公厅\\General Office of the State Council of the People’s Republic of China};
-		
-		\coordinate [below =0.2 cm of NGOSC.south west] (CDCSC);
-		\node [below right=0 and 0 cm of CDCSC,style1] (NDCSC) {国务院组成部门\\Departments Constituting the State Council};
+	    %
+		\coordinate (CGOSC) at (CBodyLeft |- NSC.south);
+		\node [below right=0 and 0 cm of CGOSC,cSectionTextStyle,draw] (NGOSC) {中华人民共和国国务院办公厅\\General Office of the State Council of the People’s Republic of China};		
+		\coordinate (CSGOSCNorthWest) at (CBodyLeft |- NGOSC.north);
+		\coordinate (CSGOSCNorthEast) at (CBodyRight |- NGOSC.north);
+		\coordinate (CSGOSCSouthEast) at (CBodyRight |- NGOSC.south);
+		\coordinate (CSGOSCSouthWest) at (CBodyLeft |- NGOSC.south);
+		\fill [SurfaceContainerColor] (NGOSC.north east) rectangle (CSGOSCSouthEast);
+		\draw[cPrimaryLineStyle] (CSGOSCSouthWest) -- (CSGOSCSouthEast);		
+
+
+
+
+
+		\coordinate [below=1 cm of NGOSC.south west] (CDCSC);
+		\node [below right=0 and 0 cm of CDCSC,cSectionTextStyle] (NDCSC) {国务院组成部门\\Departments Constituting the State Council};
+		\coordinate (CDCSCNorthWest) at (CBodyLeft |- NDCSC.north);
+		\coordinate (CDCSCNorthEast) at (CBodyRight |- NDCSC.north);
+		\coordinate (CDCSCSouthEast) at (CBodyRight |- NDCSC.south);
+		\coordinate (CDCSCSouthWest) at (CBodyLeft |- NDCSC.south);
+		\fill [SurfaceContainerColor] (NDCSC.north east) rectangle (CDCSCSouthEast);
+		\draw[cPrimaryLineStyle] (CDCSCSouthWest) -- (CDCSCSouthEast);
 				
-		\coordinate [below=0 cm of NDCSC.south west] (CMFA);
-		\node [below right=0 and 0 cm of CMFA,cMinistryTextStyle] (NMFA) {中华人民共和国外交部\\Ministry of Foreign Affairs of the People's Republic of China};	
+		\coordinate (CMFA) at ($(CMinistryLeft |- NDCSC.south) + (0, -\cSectionAboveSkip cm)$);
+		\node [below right=0 and 0 cm of CMFA,cMinistryTextStyle] (NMFA) {中华人民共和国外交部\\Ministry of Foreign Affairs of the People's Republic of China};
 			
-		\coordinate [below=0 cm of NMFA.south west] (CMND);
+		\coordinate (CMND) at (CMinistryLeft |- NMFA.south);
 		\node [below right=0 and 0 cm of CMND,cMinistryTextStyle] (NMND) {中华人民共和国国防部\\Ministry of National Defense of the People's Republic of China};
 		
-		\coordinate [below=0 cm of NMND.south west] (CMVA);
-		\node [below right=0 and 0 cm of CMVA,cMinistryTextStyle] (NMVA) {中华人民共和国退役军人事务部\\Ministry of Veterans Affairs of the People's Republic of China};
-			 
+		\coordinate (CMVA) at (CMinistryLeft |- NMND.south);
+		\node [below right=0 and 0 cm of CMVA,cMinistryTextStyle] (NMVA) {中华人民共和国退役军人事务部\\Ministry of Veterans Affairs of the People's Republic of China};		
+		
+		\coordinate (CNEAC) at (CMinistryLeft |- NMVA.south);
+		\node [below right=0 and 0 cm of CNEAC,cMinistryTextStyle] (NNEAC) {中华人民共和国国家民族事务委员会\\National Ethnic Affairs Commission of the People's Republic of China};
+		
 			
-		\coordinate [below=0 cm of NMVA.south west] (CMPS);
-		\node [below right=0 and 0 cm of CMPS,cMinistryIconStyle] (NMPSEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{人民警察警徽.png}};
-		\node [below right=0 and 0 cm of NMPSEmblem.north east,cMinistryTextStyle] (NMPS) {中华人民共和国公安部\\Ministry of Public Security of the People's Republic of China};
+			
+		\coordinate (CMPS) at (CMinistryLeft |- NNEAC.south);
+		\node [below right=0 and 0 cm of CMPS,cMinistryTextStyle] (NMPS) {中华人民共和国公安部\\Ministry of Public Security of the People's Republic of China};
+		\node [below left=0 and 0 cm of NMPS.north west,cMinistryIconStyle] (NMPSEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{人民警察警徽.png}};
 		
 		% https://www.nia.gov.cn/n897453/c1397527/content.html
 		\coordinate (CNIA) at (CMPS |- NMPS.south);
-		\node [below right=0 and 0 cm of CNIA,cViceMinistryIconStyle] (NNIAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国移民管理标志.png}};
-		\node [below right=0 and 0 cm of NNIAEmblem.north east,cViceMinistryTextStyle] (NNIA) {国家移民管理局\\National Immigration Administration};
+		\node [below left=0 and 0 cm of CNIA,cViceMinistryIconStyle] (NNIAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国移民管理标志.png}};
+		\node [below right=0 and 0 cm of CNIA,cViceMinistryTextStyle] (NNIA) {国家移民管理局\\National Immigration Administration};
 		
 		\coordinate [right=0 cm of NNIA.north east] (CEEA);
-		\node [below right=0 and 0.1 cm of CEEA,cViceMinistryTextStyle] (NEEA) {中华人民共和国出入境管理局\\Exit and Entry Administration of the People's Republic of China};
-		\node [below=0 cm of CEEA,cAssistantTextStyle] at (CEEA) {加\\挂};
-		
-%		\node [cViceMinistryBoxStyle,fit=(CNIA) (NEEA)] {};
-		
+		\node [below right=0 and 0 cm of CEEA,cViceMinistryTextStyle] (NEEA) {中华人民共和国出入境管理局\\Exit and Entry Administration of the People's Republic of China};
+		\node [below left=0 and 0 cm of CEEA,cAssistantTextStyle] at (CEEA) {加挂};
 				
-		\coordinate (CMSS) at (CMPS |- NNIA.south);
-		\node [below right=0 and 0 cm of CMSS,cMinistryIconStyle] (NMSSEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{国家安全部徽章.png}};
-		\node [below right=0 and 0 cm of NMSSEmblem.north east,cMinistryTextStyle] (NMSS) {中华人民共和国国家安全部\\Ministry of State Security of the People's Republic of China};
+			
+				
+		\coordinate (CMSS) at (CMinistryLeft |- NNIA.south);
+		\node [below left=0 and 0 cm of CMSS,cMinistryIconStyle] (NMSSEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{国家安全部徽章.png}};
+		\node [below right=0 and 0 cm of CMSS,cMinistryTextStyle] (NMSS) {中华人民共和国国家安全部\\Ministry of State Security of the People's Republic of China};
 		
 		
 		% https://www.mem.gov.cn/xw/yjglbgzdt/202503/t20250313_516052.shtml
-		\coordinate (CMEM) at (CNIA |- NMSS.south);
+		\coordinate (CMEM) at (CMinistryLeft |- NMSS.south);
 		\node [below right=0 and 0 cm of CMEM,cMinistryTextStyle] (NMEM) {中华人民共和国应急管理部\\Ministry of Emergency Management of the People's Republic of China};
 		
-		\coordinate [below=0 cm of NMEM.south west] (CNCMSA);
+		\coordinate (CNCMSA) at (CMEM |- NMEM.south);
 		\node [below right=0 and 0 cm of CNCMSA,cViceMinistryTextStyle] (NNCMSA) {国家矿山安全监察局\\National Coal Mine Safety Administration};
 		
-		\coordinate [right=0 cm of NNCMSA.north east] (CNFRA);
+		\coordinate (CNFRA) at (CViceMinistryColumn2Left |- NMEM.south);
 		\node [below right=0 and 0 cm of CNFRA,cViceMinistryTextStyle] {国家消防救援局\\National Fire and Rescue Administration};
 		
-
-		\coordinate (CMCA) at (CNCMSA |- NNCMSA.south);
-		\node [below right=0 and 0 cm of CMCA,cMinistryIconStyle] (NMCAEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国民政标志.png}};
-		\node [below right=0 and 0 cm of NMCAEmblem.north east,cMinistryTextStyle] (NMCA) {中华人民共和国民政部\\Ministry of Civil Affairs of the People's Republic of China};
-		
 		% https://www.gov.cn/xinwen/2019-12/07/content_5459232.htm
-		\coordinate (CMJ) at (CMCA |- NMCA.south);
-		\node [below right=0 and 0 cm of CMJ,cMinistryIconStyle] (NMJEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{司法行政徽.png}};
-		\node [below right=0 and 0 cm of NMJEmblem.north east,cMinistryTextStyle] (NMJ) {中华人民共和国司法部\\Ministry of Justice of the People's Republic of China};
+		\coordinate (CMJ) at (CMinistryLeft |- NNCMSA.south);
+		\node [below left=0 and 0 cm of CMJ,cMinistryIconStyle] (NMJEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{司法行政徽.png}};
+		\node [below right=0 and 0 cm of CMJ,cMinistryTextStyle] (NMJ) {中华人民共和国司法部\\Ministry of Justice of the People's Republic of China};
 		
-		
-		\coordinate (CNDRC) at (CMJ |- NMJ.south);
-		\node [below right=0 and 0 cm of CNDRC,cMinistryTextStyle] (NNDRC) {中华人民共和国国家发展和改革委员会\\National Development and Reform Commission of the People's Republic of China};
-		
-		\coordinate [below=0 cm of NNDRC.south west] (CNFSRA);
-		\node [below right=0 and 0 cm of CNFSRA,cViceMinistryTextStyle] (NNFSRA) {国家粮食和物资储备局\\National Food and Strategic Reserves Administration};
-		
-%		\node [cViceMinistryBoxStyle,fit=(CNFSRA) (NNFSRA)] {};
-		
-		\coordinate [right=0 cm of NNFSRA.north east] (CNEA);
-		\node [below right=0 and 0 cm of CNEA,cViceMinistryTextStyle] (NNEA) {国家能源局\\National Energy Administration};
-		
-		\coordinate [right=0 cm of NNEA.north east] (CNDA);
-		\node [below right=0 and 0 cm of CNDA,cViceMinistryTextStyle] (NNDA) {国家数据局\\National Data Administration};
-
-		
-		
-		\coordinate [below=0 cm of NNFSRA.south west] (CMIIT);
-		\node [below right=0 and 0 cm of CMIIT] (NMIITEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{工业和信息化部徽标.png}};
-		\node [below right=0 and 0 cm of NMIITEmblem.north east,cMinistryTextStyle] (NMIIT) {中华人民共和国工业和信息化部\\Ministry of Industry and Information Technology of the People's Republic of China};
-		
-		% https://www.cnsa.gov.cn/n6758821/index.html
-		\coordinate (CCNSA) at (CMIIT |- NMIIT.south);
-		\node [below right=0 and 0 cm of CCNSA] (NCNSAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家航天局标志.png}};
-		\node [below right=0 and 0 cm of NCNSAEmblem.north east,cViceMinistryTextStyle] (NCNSA) {国家航天局\\China National Space Administration};
-		\node [below right=0 and 0 cm of CCNSA,cAssistantTextStyle] at (CCNSA) {保留};
-		
-		\coordinate [right=0 cm of NCNSA.north east] (CCAEA);
-		\node [below right=0 and 0 cm of CCAEA] (NCAEAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家原子能机构标志.png}};
-		\node [below right=0 and 0 cm of NCAEAEmblem.north east,cViceMinistryTextStyle] (NCAEA) {国家原子能机构\\China Atomic Energy Authority};
-		\node [below right=0 and 0 cm of CCAEA,cAssistantTextStyle] at (CCAEA) {保留};
-		
-%		\node [cMinistryBoxStyle,fit=(CMIIT) (NMIIT.south) (NCAEA.east)] {};	
-		
-		\coordinate (CSASTIND) at (CCNSA |- NCNSA.south);
-		\node [below right=0 and 0 cm of CSASTIND,cViceMinistryTextStyle] (NSASTIND) {国家国防科技工业局\\State Administration of Science, Technology and Industry for National Defence};
-		
-		\coordinate [right=0 cm of NSASTIND.north east] (CSTMA);
-		\node [below right=0 and 0 cm of CSTMA] (NSTMAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国烟草标志.png}};
-		\node [below right=0 and 0 cm of NSTMAEmblem.north east,cViceMinistryTextStyle] {国家烟草专卖局\\State Tobacco Monopoly Administration};
-		
-				
-				
-		\coordinate [below=0 cm of NSASTIND.south west] (CMF);
+		\coordinate (CMCA) at (CMinistryLeft |- NMJ.south);
+		\node [below left=0 and 0 cm of CMCA,cMinistryIconStyle] (NMCAEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国民政标志.png}};
+		\node [below right=0 and 0 cm of CMCA,cMinistryTextStyle] (NMCA) {中华人民共和国民政部\\Ministry of Civil Affairs of the People's Republic of China};			
+						
+		\coordinate (CMF) at (CMinistryLeft |- NMCA.south);
 		\node [below right=0 and 0 cm of CMF,cMinistryTextStyle] (NMF) {中华人民共和国财政部\\Ministry of Finance of the People's Republic of China};
 		
-		\coordinate [below=0 cm of NMF.south west] (CMHURD);
-		\node [below right=0 and 0 cm of CMHURD,cMinistryTextStyle] (NMHURD) {中华人民共和国住房和城乡建设部\\Ministry of Housing and Urban-Rural Development of the People's Republic of China};
 		
-		% https://www.mofcom.gov.cn/zcfb/blgg/art/2006/art_7131ede7785a4fd2a0ec6409910501fa.html
-		\coordinate [below=0 cm of NMHURD.south west] (CMC);
-		\node [below right=0 and 0 cm of CMC] (NMCEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{商务部标识.png}};
-		\node [below right=0 and 0 cm of NMCEmblem.north east,cMinistryTextStyle] (NMC) {中华人民共和国商务部\\Ministry of Commerce of the People's Republic of China};	
+		
+		\coordinate (CMHRSS) at (CMinistryLeft |- NMF.south);
+		\node [below right=0 and 0 cm of CMHRSS,cMinistryTextStyle] (NMHRSS) {中华人民共和国人力资源和社会保障部\\Ministry of Human Resources and Social Security of the People's Republic of China};
+		
+		\coordinate (CSAFEA) at (NMHRSS.west  |- NMHRSS.south);
+		\node [below left=0 and 0 cm of CSAFEA] (NSAFEAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家外国专家局标志.png}};
+		\node [below right=0 and 0 cm of CSAFEA,cViceMinistryTextStyle] (NSAFEA) {国家外国专家局\\State Administration of Foreign Experts Affairs};		
+		\node [below left=0 and 0 cm of CSAFEA,cAssistantTextStyle] at (CSAFEA) {加挂};	
 
 
-		\coordinate (CMARA) at (CMC |- NMC.south);
-		\node [below right=0 and 0 cm of CMARA,cMinistryTextStyle] (NMARA) {中华人民共和国农业农村部\\Ministry of Agriculture and Rural Affairs of the People's Republic of China};
-		
-		\coordinate [right=0 cm of NMARA.north east] (CNRRA);
-		\node [below right=0 and 0.1 cm of CNRRA,cViceMinistryTextStyle] (NNRRA) {国家乡村振兴局\\National Rural Revitalization Administration};		
-		\node [below=0 cm of CNRRA,cAssistantTextStyle] {加\\挂};
-		
-%		\node [cMinistryBoxStyle,fit=(CMARA) (NMARA.south) (NNRRA.east)] {};
-		
-		
-		\coordinate [below=0 cm of NMARA.south west] (CMT);
-		\node [below right=0 and 0 cm of CMT,cMinistryTextStyle] (NMT) {中华人民共和国交通运输部\\Ministry of Transport of the People's Republic of China};	
-		
-		\coordinate [below=0 cm of NMT.south west] (CNRA);
-		\node [below right=0 and 0 cm of CNRA] (NNRAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中华人民共和国铁路路徽.png}};
-		\node [below right=0 and 0 cm of NNRAEmblem.north east,cViceMinistryTextStyle] (NNRA) {国家铁路局\\National Railway Administration};	
 
-		\coordinate [right=0 cm of NNRA.north east] (CCAAC);
-		\node [below right=0 and 0 cm of CCAAC] (NCAACEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国民用航空局局徽.png}};
-		\node [below right=0 and 0 cm of NCAACEmblem.north east,cViceMinistryTextStyle] (NCAAC) {中国民用航空局\\Civil Aviation Administration of China};		
+
+		\coordinate (CMNR) at (CMinistryLeft |- NSAFEA.south);
+		\node [below right=0 and 0 cm of CMNR,cMinistryTextStyle] (NMNR) {中华人民共和国自然资源部\\Ministry of Natural Resources of the People's Republic of China};
 		
-		\coordinate [right=0 cm of NCAAC.north east] (CSPB);
-		\node [below right=0 and 0 cm of CSPB] (NSPBEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国邮政企业徽标.png}};
-		\node [below right=0 and 0 cm of NSPBEmblem.north east,cViceMinistryTextStyle] {国家邮政局\\State Post Bureau};
-					
+		\coordinate (CSOA) at (NMNR.west  |- NMNR.south);
+		\node [below left=0 and 0 cm of CSOA,cViceMinistryIconStyle] (NSOAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家海洋局标志.png}};
+		\node [below right=0 and 0 cm of CSOA,cViceMinistryTextStyle] (NSOA) {国家海洋局\\State Oceanic Administration};		
+		\node [below left=0 and 0 cm of CSOA,cAssistantTextStyle] at (CSOA) {保留};
+		
+		\coordinate (CNFGA) at (NMNR.west  |- NSOA.south);
+		\node [below left=0 and 0 cm of CNFGA,cViceMinistryIconStyle] (NNFGAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家林业和草原局标志.png}};
+		\node [below right=0 and 0 cm of CNFGA,cViceMinistryTextStyle] (NNFGA) {国家林业和草原局\\National Forestry and Grassland Administration};		
+		\coordinate [right=0 cm of NNFGA.north east] (CNPA);
+		\node [below right=0 and 0 cm of CNPA,cViceMinistryTextStyle] (NNPA) {国家公园管理局\\National Park Administration};
+		\node [below left=0 and 0 cm of CNPA,cAssistantTextStyle] at (CNPA) {加挂};
+
+				
+		
+		% https://www.mee.gov.cn/gkml/hbb/bgg/200910/t20091022_174510.htm			
+		\coordinate (CMEE) at ($(CNFGA |- NNFGA.south) + (0, -0.1cm)$);
+		\node [below right=0 and 0 cm of CMEE,cMinistryTextStyle] (NMEE) {中华人民共和国生态环境部\\Ministry of Ecology and Environment of the People's Republic of China};
+		
+		\coordinate (CNNSA) at (NMEE.west  |- NMEE.south);
+		\node [below left=0 and 0 cm of CNNSA,cViceMinistryIconStyle] (NNNSAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家核安全局.png}};
+		\node [below right=0 and 0 cm of CNNSA,cViceMinistryTextStyle] (NNNSA) {国家核安全局\\National Nuclear Safety Administration};
+		\node [below left=0 and 0 cm of CNNSA,cAssistantTextStyle] at (CNNSA) {保留};
+
+
+				
 	\end{tikzpicture}
 	
     \newpage
@@ -248,182 +265,373 @@
 	    \fill [white] (current page.north west) rectangle (current page.south east);
 	    
    		\draw[dashed] (21, 0) -- (21, -29.7) -- (0, -29.7); 
-	
-		\coordinate [below right=2 cm and 0.5 cm of current page.north west] (CME);
+   		
+		\coordinate (CNDRC) at (CMinistryLeft |- CBodyTop);
+		\node [below right=0 and 0 cm of CNDRC,cMinistryTextStyle] (NNDRC) {中华人民共和国国家发展和改革委员会\\National Development and Reform Commission of the People's Republic of China};
+		
+		\coordinate [below=0 cm of NNDRC.south west] (CNFSRA);
+		\node [below right=0 and 0 cm of CNFSRA,cViceMinistryTextStyle] (NNFSRA) {国家粮食和物资储备局\\National Food and Strategic Reserves Administration};
+		
+		\coordinate (CNEA) at (CViceMinistryColumn2Left |- NNDRC.south);
+		\node [below right=0 and 0 cm of CNEA,cViceMinistryTextStyle] (NNEA) {国家能源局\\National Energy Administration};
+		
+		\coordinate (CNDA) at (CNDRC |- NNFSRA.south);
+		\node [below right=0 and 0 cm of CNDA,cViceMinistryTextStyle] (NNDA) {国家数据局\\National Data Administration};
+		
+		
+		
+		\coordinate (CME) at (CMinistryLeft |- NNDA.south);
 		\node [below right=0 and 0 cm of CME,cMinistryTextStyle] (NME) {中华人民共和国教育部\\Ministry of Education of the People's Republic of China};
 		
-		\coordinate (CCNSA) at (NME.north east);
-		\node [below right=0 and 0.4 cm of CCNSA,cViceMinistryTextStyle] (NCNSA) {国家语言文字工作委员会\\State Language Commission};
-		\node [below right=0 and 0 cm of CCNSA,cAssistantTextStyle] at (CCNSA) {保留};
-				
-%		\node [cMinistryBoxStyle,fit=(CME) (NME.south) (NCNSA.east)] {};		
+		\coordinate (CCNSA) at (CME |- NME.south);
+		\node [below right=0 and 0 cm of CCNSA,cViceMinistryTextStyle] (NCNSA) {国家语言文字工作委员会\\State Language Commission};
+		\node [below left=0 and 0 cm of CCNSA,cAssistantTextStyle] at (CCNSA) {保留};
+		
 				
 		
-		\coordinate [below=0 cm of NME.south west] (CMST);
+		\coordinate (CMST) at (CMinistryLeft |- NCNSA.south);
 		\node [below right=0 and 0 cm of CMST,cMinistryTextStyle] (NMST) {中华人民共和国科学技术部\\Ministry of Science and Technology of the People's Republic of China};
+
+
+
+		\coordinate (CMIIT) at (CMinistryLeft |- NMST.south);
+		\node [below left=0 and 0 cm of CMIIT,cMinistryIconStyle] (NMIITEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{工业和信息化部徽标.png}};
+		\node [below right=0 and 0 cm of CMIIT,cMinistryTextStyle] (NMIIT) {中华人民共和国工业和信息化部\\Ministry of Industry and Information Technology of the People's Republic of China};
+		
+		% https://www.cnsa.gov.cn/n6758821/index.html
+		\coordinate (CCNSA) at (CMIIT |- NMIIT.south);
+		\node [below left=0 and 0 cm of CCNSA] (NCNSAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家航天局标志.png}};
+		\node [below right=0 and 0 cm of CCNSA,cViceMinistryTextStyle] (NCNSA) {国家航天局\\China National Space Administration};
+		\node [below left=0 and 0 cm of CCNSA,cAssistantTextStyle] at (CCNSA) {保留};
+		
+		\coordinate (CCAEA) at (CViceMinistryColumn2Left |- NMIIT.south);
+		\node [below left=0 and 0 cm of CCAEA] (NCAEAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家原子能机构标志.png}};
+		\node [below right=0 and 0 cm of CCAEA,cViceMinistryTextStyle] (NCAEA) {国家原子能机构\\China Atomic Energy Authority};
+		\node [below left=0 and 0 cm of CCAEA,cAssistantTextStyle] at (CCAEA) {保留};
+		
+		\coordinate (CSASTIND) at (CCNSA |- NCNSA.south);
+		\node [below right=0 and 0 cm of CSASTIND,cViceMinistryTextStyle] (NSASTIND) {国家国防科技工业局\\State Administration of Science, Technology and Industry for National Defence};
+		
+		\coordinate (CSTMA) at (CCNSA |- NSASTIND.south);
+		\node [below left=0 and 0 cm of CSTMA] (NSTMAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国烟草标志.png}};
+		\node [below right=0 and 0 cm of CSTMA,cViceMinistryTextStyle] (NSTMA) {国家烟草专卖局\\State Tobacco Monopoly Administration};
+		\node [below right=0 and 0 cm of NSTMA.north east,cViceMinistryTextStyle] (NCNTC) {中国烟草总公司\\China National Tobacco Corporation};
+		\node [below left=0 and 0 cm of NCNTC.north west,cAssistantTextStyle] {一个机构\\两块牌子};	
 		
 		
-		\coordinate [below=0 cm of NMST.south west] (CMCT);
+		
+		
+		\coordinate (CMHURD) at (CMinistryLeft |- NSTMA.south);
+		\node [below right=0 and 0 cm of CMHURD,cMinistryTextStyle] (NMHURD) {中华人民共和国住房和城乡建设部\\Ministry of Housing and Urban-Rural Development of the People's Republic of China};
+		
+		
+		
+		\coordinate(CMT) at (CMinistryLeft |- NMHURD.south);
+		\node [below right=0 and 0 cm of CMT,cMinistryTextStyle] (NMT) {中华人民共和国交通运输部\\Ministry of Transport of the People's Republic of China};	
+		
+		\coordinate (CNRA) at (CMT |- NMT.south);
+		\node [below left=0 and 0 cm of CNRA] (NNRAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中华人民共和国铁路路徽.png}};
+		\node [below right=0 and 0 cm of CNRA,cViceMinistryTextStyle] (NNRA) {国家铁路局\\National Railway Administration};	
+
+		\coordinate [right=0 cm of NNRA.north east] (CCAAC);
+		\node [below right=0 and 0 cm of CCAAC] (NCAACEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国民用航空局局徽.png}};
+		\node [below right=0 and 0 cm of NCAACEmblem.north east,cViceMinistryTextStyle] (NCAAC) {中国民用航空局\\Civil Aviation Administration of China};		
+		
+		\coordinate [right=0 cm of NCAAC.north east] (CSPB);
+		\node [below right=0 and 0 cm of CSPB] (NSPBEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国邮政企业徽标.png}};
+		\node [below right=0 and 0 cm of NSPBEmblem.north east,cViceMinistryTextStyle] (NSPB) {国家邮政局\\State Post Bureau};
+
+
+
+
+		\coordinate (CMWR) at (CMinistryLeft |- NSPB.south);
+		\node [below left=0 and 0 cm of CMWR,cMinistryIconStyle] (NMWREmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{水利部标志.png}};
+		\node [below right=0 and 0 cm of CMWR,cMinistryTextStyle] (NMWR) {中华人民共和国水利部\\Ministry of Water Resources of the People's Republic of China};
+
+
+	
+		\coordinate (CMARA) at (CMinistryLeft |- NMWR.south);
+		\node [below right=0 and 0 cm of CMARA,cMinistryTextStyle] (NMARA) {中华人民共和国农业农村部\\Ministry of Agriculture and Rural Affairs of the People's Republic of China};	
+		
+		\coordinate (CNRRA) at (CMARA |- NMARA.south);
+		\node [below right=0 and 0 cm of CNRRA,cViceMinistryTextStyle] (NNRRA) {国家乡村振兴局\\National Rural Revitalization Administration};		
+		\node [below left=0 and 0 cm of CNRRA,cAssistantTextStyle] {加挂};
+
+
+
+		% https://www.mofcom.gov.cn/zcfb/blgg/art/2006/art_7131ede7785a4fd2a0ec6409910501fa.html
+		\coordinate (CMC) at (CMinistryLeft |- NNRRA.south);
+		\node [below left=0 and 0 cm of CMC,cMinistryIconStyle] (NMCEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{商务部标识.png}};
+		\node [below right=0 and 0 cm of CMC,cMinistryTextStyle] (NMC) {中华人民共和国商务部\\Ministry of Commerce of the People's Republic of China};	
+
+
+		
+		\coordinate (CMCT) at (CMinistryLeft |- NMC.south);
 		\node [below right=0 and 0 cm of CMCT,cMinistryTextStyle] (NMCT) {中华人民共和国文化和旅游部\\Ministry of Culture and Tourism of the People's Republic of China};
 		
 		% https://www.mct.gov.cn/whzx/tpxw/200508/t20050804_828228.htm
 		% https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=484AC34384C5C050185BFEC198B7833C
-		\coordinate [below=0 cm of NMCT.south west] (CNCHA);
-		\node [below right=0 and 0 cm of CNCHA] (NNCHAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国文化遗产标志.png}};
-		\node [below right=0 and 0 cm of NNCHAEmblem.north east,cViceMinistryTextStyle] (NNCHA) {国家文物局\\National Cultural Heritage Administration};
+		\coordinate (CNCHA) at (CMCT |- NMCT.south);
+		\node [below left=0 and 0 cm of CNCHA] (NNCHAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国文化遗产标志.png}};
+		\node [below right=0 and 0 cm of CNCHA,cViceMinistryTextStyle] (NNCHA) {国家文物局\\National Cultural Heritage Administration};
 		
 		
-		\coordinate (CNEAC) at (CMCT |- NNCHA.south);
-		\node [below right=0 and 0 cm of CNEAC,cMinistryTextStyle] (NNEAC) {中华人民共和国国家民族事务委员会\\National Ethnic Affairs Commission of the People's Republic of China};
 		
-		
-		\coordinate [below=0 cm of NNEAC.south west] (CNHC);
+		\coordinate (CNHC) at (CMinistryLeft |- NNCHA.south);
 		\node [below right=0 and 0 cm of CNHC,cMinistryTextStyle] (NNHC) {中华人民共和国国家卫生健康委员会\\National Health Commission of the People's Republic of China};
 		
 		\coordinate [below=0 cm of NNHC.south west] (CNATCM);
 		\node [below right=0 and 0 cm of CNATCM,cViceMinistryTextStyle] (NNATCM) {国家中医药管理局\\National Administration of Traditional Chinese Medicine};
 
 		\coordinate [right=0 cm of NNATCM.north east] (CNMPAA);
-		\node [below right=0 and 0 cm of CNMPAA,cViceMinistryTextStyle] {国家药品监督管理局\\National Medical Products Administration};		
+		\node [below right=0 and 0 cm of CNMPAA,cViceMinistryTextStyle] {国家药品监督管理局\\National Medical Products Administration};	
 		
-		
-		\coordinate [below=0 cm of NNATCM.south west] (CMHRSS);
-		\node [below right=0 and 0 cm of CMHRSS,cMinistryTextStyle] (NMHRSS) {中华人民共和国人力资源和社会保障部\\Ministry of Human Resources and Social Security of the People's Republic of China};
-		
-		\coordinate [right=0 cm of NMHRSS.north east] (CSAFEA);
-		\node [below right=0 and 0 cm of CSAFEA] (NSAFEAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家外国专家局标志.png}};
-		\node [below right=0 and 0 cm of NSAFEAEmblem.north east,cViceMinistryTextStyle] (NSAFEA) {国家外国专家局\\State Administration of Foreign Experts Affairs};		
-		\node [below=0 cm of CSAFEA,cAssistantTextStyle] at (CSAFEA) {加\\挂};	
-		
-%		\node [cMinistryBoxStyle,fit=(CMHRSS) (NMHRSS.south) (NSAFEA.east)] {};
-		
-		
-		\coordinate (CMNR) at ($(NMHRSS.south west) + (0, -0.1cm)$);
-		\node [below right=0 and 0 cm of CMNR,cMinistryTextStyle] (NMNR) {中华人民共和国自然资源部\\Ministry of Natural Resources of the People's Republic of China};
-		
-		\coordinate [right=0 cm of NMNR.north east] (CSOA);
-		\node [below right=0 and 0 cm of CSOA,cViceMinistryIconStyle] (NSOAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家海洋局标志.png}};
-		\node [below right=0 and 0 cm of NSOAEmblem.north east,cViceMinistryTextStyle] (NSOA) {国家海洋局\\State Oceanic Administration};
-		
-%		\node [cViceMinistryBoxStyle,dashed,fit=(CSOA) (NSOA)] (SSOA) {};
-		
-		\node [below right=0 and 0 cm of CSOA,cAssistantTextStyle] at (CSOA) {保留};
-		
-%		\node [cMinistryBoxStyle,fit=(CMNR) (NMNR.south) (NSOA.east)] {};
-		
-		\coordinate [below=0 cm of NMNR.south west] (CNFGA);
-		\node [below right=0 and 0 cm of CNFGA,cViceMinistryIconStyle] (NNFGAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家林业和草原局标志.png}};
-		\node [below right=0 and 0 cm of NNFGAEmblem.north east,cViceMinistryTextStyle] (NNFGA) {国家林业和草原局\\National Forestry and Grassland Administration};
-		
-		\coordinate [right=0 cm of NNFGA.north east] (CNPA);
-		\node [below right=0 and 0.1 cm of CNPA,cViceMinistryTextStyle] (NNPA) {国家公园管理局\\National Park Administration};
-		\node [below=0 cm of CNPA,cAssistantTextStyle] at (CNPA) {加\\挂};
-		
-%		\node [cViceMinistryBoxStyle,fit=(CNFGA) (NNPA)] {};
-				
-					
-		\coordinate (CMEE) at ($(CNFGA |- NNFGA.south) + (0, -0.1cm)$);
-		\node [below right=0 and 0 cm of CMEE,cMinistryTextStyle] (NMEE) {中华人民共和国生态环境部\\Ministry of Ecology and Environment of the People's Republic of China};
-		
-		\coordinate [right=0 cm of NMEE.north east] (CNNSA);
-		\node [below right=0 and 0 cm of CNNSA,cViceMinistryIconStyle] (NNNSAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家核安全局.png}};
-		\node [below right=0 and 0 cm of NNNSAEmblem.north east,cViceMinistryTextStyle] (NNNSA) {国家核安全局\\National Nuclear Safety Administration};
-		\node [below right=0 and 0 cm of CNNSA,cAssistantTextStyle] at (CNNSA) {保留};
-		
-%		\node [cMinistryBoxStyle,fit=(CMEE) (NMEE.south) (NNNSA.east)] {};
-		
-		
-		\coordinate [below=0 cm of NMEE.south west] (CMWR);
-		\node [below right=0 and 0 cm of CMWR] (NMWREmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{水利部标志.png}};
-		\node [below right=0 and 0 cm of NMWREmblem.north east,cMinistryTextStyle] (NMWR) {中华人民共和国水利部\\Ministry of Water Resources of the People's Republic of China};
 
 
-        \coordinate (CTPBC) at (CMWR |- NMWR.south);
-		\coordinate (CPBC) at ($(CTPBC) + (0, -0.1cm)$);
-		\node [below right=0 and 0 cm of CPBC] (NPBCEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国人民银行行徽.png}};
+        \coordinate (CPBC) at (CMinistryLeft |- NNATCM.south);
+		\node [below left=0 and 0 cm of CPBC,cMinistryIconStyle] (NPBCEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国人民银行行徽.png}};
 		\node [below right=0 and 0 cm of NPBCEmblem.north east,cMinistryTextStyle] (NPBC) {中国人民银行\\The People's Bank of China};
 
-		\coordinate [below=0 cm of NPBCEmblem.south west] (CSAFE);
-		\node [below right=0 and 0 cm of CSAFE,cViceMinistryIconStyle] (NSAFEEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国政府统计标志.png}};
-		\node [below right=0 and 0 cm of NSAFEEmblem.north east,cViceMinistryTextStyle] (NSAFE) {国家外汇管理局\\State Administration of Foreign Exchange};
+		\coordinate (CSAFE) at (CPBC |- NPBC.south);
+		\node [below left=0 and 0 cm of CSAFE,cViceMinistryIconStyle] (NSAFEEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国政府统计标志.png}};
+		\node [below right=0 and 0 cm of CSAFE,cViceMinistryTextStyle] (NSAFE) {国家外汇管理局\\State Administration of Foreign Exchange};
+		
 		
 
-        \coordinate (CTNAO) at (CPBC |- NSAFE.south);
-		\coordinate (CNAO) at ($(CTNAO) + (0, -0.1cm)$);  		
-   		\node [below right=0 and 0 cm of CNAO] (NNAOEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{审计署标示标识.png}};
-   		\node [below right=0 and 0 cm of NNAOEmblem.north east,cMinistryTextStyle] {中华人民共和国审计署\\National Audit Office of the People's Republic of China};
-
+        \coordinate (CNAO) at (CMinistryLeft |- NSAFE.south); 		
+   		\node [below left=0 and 0 cm of CNAO,cMinistryIconStyle] (NNAOEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{审计署标示标识.png}};
+   		\node [below right=0 and 0 cm of CNAO,cMinistryTextStyle] (NNAO) {中华人民共和国审计署\\National Audit Office of the People's Republic of China};  		
 	    
 	\end{tikzpicture}
 	
 	\newpage
 	
 	\begin{tikzpicture}[remember picture, overlay]
-		
-		\coordinate [below right=2 cm and 0.5 cm of current page.north west] (CSODUSC);
-		\node [right=0 cm of CSODUSC,style1] {国务院直属特设机构\\Special Organisations Directly Under the State Council};
+	
+		\coordinate (CSODUSC) at (CBodyLeft |- CBodyTop);
+		\node [below right=0 and 0 cm of CSODUSC,cSectionTextStyle] (NSODUSC) {国务院直属特设机构\\Special Organisations Directly Under the State Council};
+		\coordinate (CSODUSCNorthWest) at (CBodyLeft |- NSODUSC.north);
+		\coordinate (CSODUSCNorthEast) at (CBodyRight |- NSODUSC.north);
+		\coordinate (CSODUSCSouthEast) at (CBodyRight |- NSODUSC.south);
+		\coordinate (CSODUSCSouthWest) at (CBodyLeft |- NSODUSC.south);
+		\fill [SurfaceContainerColor] (NSODUSC.north east) rectangle (CSODUSCSouthEast);
+		\draw[cPrimaryLineStyle] (CSODUSCSouthWest) -- (CSODUSCSouthEast);
 		
 		% http://www.sasac.gov.cn/n2588020/n2588082/c2588763/content.html
-		\coordinate [below=\compsVertivalInterval cm of CSODUSC] (CSASACSC);
-		\node [right=0 cm of CSASACSC,cMinistryTextStyle] {国务院国有资产监督管理委员会\\State-owned Assets Supervision and Administration Commission of the State Council};
+		\coordinate (CSASACSC) at ($(CMinistryLeft |- NSODUSC.south) + (0, -\cSectionAboveSkip)$);
+		\node [below left=0 and 0 cm of CSASACSC,cMinistryIconStyle] (NSASACSCEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{国务院国资委标识.png}};
+		\node [below right=0 and 0 cm of CSASACSC,cMinistryTextStyle] (NSASACSC) {国务院国有资产监督管理委员会\\State-owned Assets Supervision and Administration Commission of the State Council};
 		
 		% Directly Affiliated Institutions, 
-		\coordinate [below=2.5 cm of CSODUSC] (CODUSC);
-		\node [right=0 cm of CODUSC,style1] {国务院直属机构\\Organisations Directly Under the State Council};
+		\coordinate (CODUSC) at ($(CBodyLeft |- NSASACSC.south) + (0, -0.2)$);
+		\node [below right=0 and 0 cm of CODUSC.south west,cSectionTextStyle] (NODUSC) {国务院直属机构\\Organisations Directly Under the State Council};
+		\coordinate (CODUSCNorthWest) at (CBodyLeft |- NODUSC.north);
+		\coordinate (CODUSCNorthEast) at (CBodyRight |- NODUSC.north);
+		\coordinate (CODUSCSouthEast) at (CBodyRight |- NODUSC.south);
+		\coordinate (CODUSCSouthWest) at (CBodyLeft |- NODUSC.south);
+		\fill [SurfaceContainerColor] (NODUSC.north east) rectangle (CODUSCSouthEast);
+		\draw[cPrimaryLineStyle] (CODUSCSouthWest) -- (CODUSCSouthEast);
 		
-		\coordinate [below=\compsVertivalInterval cm of CODUSC] (CGAC);
-		\node [right=0 cm of CGAC,cMinistryTextStyle] {中华人民共和国海关总署\\General Administration of Customs};	
+		\coordinate (CGAC) at ($(CMinistryLeft |- NODUSC.south) + (0, -\cSectionAboveSkip)$);
+		\node [below left=0 and 0 cm of CGAC,cMinistryIconStyle] (NGACEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中华人民共和国海关关徽.png}};
+		\node [below right=0 and 0 cm of CGAC,cMinistryTextStyle] (NGAC) {中华人民共和国海关总署\\General Administration of Customs};	
 			
-		\coordinate [right=10 cm of CGAC] (CSTA);
-		\node [right=0 cm of CSTA,cMinistryTextStyle] {国家税务总局\\State Taxation Administration};
+		\coordinate (CSTA) at (CMinistryLeft |- NGAC.south);
+		\node [below left=0 and 0 cm of CSTA,cMinistryIconStyle] (NSTAEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{国家税务总局税徽.png}};
+		\node [below right=0 and 0 cm of CSTA,cMinistryTextStyle] (NSTA) {国家税务总局\\State Taxation Administration};
 		
-		\coordinate [below=\compsVertivalInterval cm of CGAC] (CSAMR);
-		\node [right=0 cm of CSAMR,cMinistryTextStyle] {国家市场监督管理总局\\State Administration for Market Regulation};	
-			
-		\coordinate [right=10 cm of CSAMR] (CNFRA);
-		\node [right=0 cm of CNFRA,cMinistryTextStyle] {国家金融监督管理总局\\National Financial Regulatory Administration};
+		\coordinate (CSAMR) at (CMinistryLeft |- NSTA.south);
+		\node [below left=0 and 0 cm of CSAMR,cMinistryIconStyle] (NSAMREmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{市场监管标志.png}};
+		\node [below right=0 and 0 cm of CSAMR,cMinistryTextStyle] (NSAMR) {国家市场监督管理总局\\State Administration for Market Regulation};
 		
-		\coordinate [below=\compsVertivalInterval cm of CSAMR] (CCSRC);
-		\node [right=0 cm of CCSRC,cMinistryTextStyle] {中国证券监督管理委员会\\China Securities Regulatory Commission};	
-			
-		\coordinate [right=10 cm of CCSRC] (CNRTA);
-		\node [right=0 cm of CNRTA,cMinistryTextStyle] {国家广播电视总局\\National Radio and Television Administration};
+		\coordinate (CNAB) at (CPageNorth |- NSAMR.south);
+		\node [below right=0 and 0 cm of CNAB,cViceMinistryTextStyle] (NNAB) {国家反垄断局\\National Anti-monopoly Bureau};	
+		\node [below left=0 and 0 cm of CNAB,cAssistantTextStyle] {保留};
 		
-		\coordinate [below=\compsVertivalInterval cm of CCSRC] (CGAS);
-		\node [right=0 cm of CGAS,cMinistryTextStyle] {国家体育总局\\General Administration of Sport};	
+		\coordinate (CNCAA) at (CSAMR |- NNAB.south);
+		\node [below right=0 and 0 cm of CNCAA,cMinistryTextStyle] (NNCAA) {国家认证认可监督管理委员会\\National Certification and Accreditation Administration};
+		\node [below left=0 and 0 cm of CNCAA,cAssistantTextStyle] {保留};	
+		
+		\coordinate (CNSA) at (CSAMR |- NSAMR.south);
+		\node [below left=0 and 0 cm of CNSA,cMinistryIconStyle] (NCSRCEmblem) {\includegraphics[width=\cMinisterialLevelEmblemHeight cm]{国家标准化管理委员会标志.png}};
+		\node [below right=0 and 0 cm of CNSA,cMinistryTextStyle] (NNSA) {国家标准化管理委员会\\National Standardization Administration};	
+		\node [below left=0 and 0 cm of CNSA,cAssistantTextStyle] {保留};	
 			
-		\coordinate [right=10 cm of CGAS] (CNPCPA);
-		\node [right=0 cm of CNPCPA,cMinistryTextStyle] {国家信访局\\National Public Complaints and Proposals Administration};
+		\coordinate (CNFRA) at (CMinistryLeft |- NNCAA.south);
+		\node [below right=0 and 0 cm of CNFRA,cMinistryTextStyle] (NNFRA) {国家金融监督管理总局\\National Financial Regulatory Administration};
+		
+		\coordinate (CCSRC) at (CMinistryLeft |- NNFRA.south);
+		\node [below left=0 and 0 cm of CCSRC,cMinistryIconStyle] (NCSRCEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国证券监督管理委员会标志.png}};
+		\node [below right=0 and 0 cm of CCSRC,cMinistryTextStyle] (NCSRC) {中国证券监督管理委员会\\China Securities Regulatory Commission};	
+			
+		\coordinate (CNRTA) at (CMinistryLeft |- NCSRC.south);
+		\node [below left=0 and 0 cm of CNRTA,cMinistryIconStyle] (NNRTAEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{国家广播电视总局标志.png}};
+		\node [below right=0 and 0 cm of CNRTA,cMinistryTextStyle] (NNRTA) {国家广播电视总局\\National Radio and Television Administration};
+		
+		\coordinate (CGAS) at (CMinistryLeft |- NNRTA.south);
+		\node [below right=0 and 0 cm of CGAS,cMinistryTextStyle] (NGAS) {国家体育总局\\General Administration of Sport};	
+			
+		\coordinate (CNPCPA) at (CMinistryLeft |- NGAS.south);
+		\node [below right=0 and 0 cm of CNPCPA,cViceMinistryTextStyle] (CNPCPA) {国家信访局\\National Public Complaints and Proposals Administration};
 		
 		% https://www.stats.gov.cn/xxgk/zcfggz/gfxwj/202302/t20230206_1901852.html
-		\coordinate [below=\compsVertivalInterval cm of CGAS] (CNBS);
-		\node [right=0 cm of CNBS,cMinistryTextStyle] {国家统计局\\National Bureau of Statistics};	
+		\coordinate (CNBS) at (CMinistryLeft |- CNPCPA.south);
+		\node [below left=0 and 0 cm of CNBS] (NNBSEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国政府统计标志.png}};
+		\node [below right=0 and 0 cm of NNBSEmblem.north east,cViceMinistryTextStyle] (NNBS) {国家统计局\\National Bureau of Statistics};	
 			
-		\coordinate [right=10 cm of CNBS] (CCNIPA);
-		\node [right=0 cm of CCNIPA,cMinistryTextStyle] {国家知识产权局\\China National Intellectual Property Administration};
+		% https://www.cnipa.gov.cn/col/col7/index.html
+		\coordinate (CCNIPA) at (CMinistryLeft |- NNBS.south);
+		\node [below left=0 and 0 cm of CCNIPA] (NCNIPAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家知识产权局标志.png}};
+		\node [below right=0 and 0 cm of NCNIPAEmblem.north east,cViceMinistryTextStyle] (NCNIPA) {国家知识产权局\\China National Intellectual Property Administration};
 		
-		\coordinate [below=\compsVertivalInterval cm of CNBS] (CCIDCA);
-		\node [right=0 cm of CCIDCA,cMinistryTextStyle] {国家国际发展合作署\\China International Development Cooperation Agency};	
+		% https://www.gov.cn/zhengce/zhengceku/2020-03/25/content_5495269.htm
+		\coordinate (CCIDCA) at (CMinistryLeft |- NCNIPA.south);
+		\node [below left=0 and 0 cm of CCIDCA] (NCIDCAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家国际发展合作署标识.png}};
+		\node [below right=0 and 0 cm of NCIDCAEmblem.north east,cViceMinistryTextStyle] (NCIDCA) {国家国际发展合作署\\China International Development Cooperation Agency};	
 			
-		\coordinate [right=10 cm of CCIDCA] (CNHSA);
-		\node [right=0 cm of CNHSA,cMinistryTextStyle] {国家医疗保障局\\National Healthcare Security Administration};		
+		% https://www.nhsa.gov.cn/art/2020/1/9/art_52_2247.html
+		\coordinate (CNHSA) at (CMinistryLeft |- NCIDCA.south);
+		\node [below left=0 and 0 cm of CNHSA] (NNHSAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{国家医疗保障局徽标.png}};
+		\node [below right=0 and 0 cm of CNHSA,cViceMinistryTextStyle] (NNHSA) {国家医疗保障局\\National Healthcare Security Administration};		
 		
-		\coordinate [below=\compsVertivalInterval cm of CCIDCA] (CCOSC);
-		\node [right=0 cm of CCOSC,cMinistryTextStyle] {国务院参事室\\Counsellors’ Office of the State Council};	
+		\coordinate (CCOSC) at (CMinistryLeft |- NNHSA.south);
+		\node [below right=0 and 0 cm of CCOSC,cViceMinistryTextStyle] (NCOSC) {国务院参事室\\Counsellors’ Office of the State Council};	
 			
-		\coordinate [right=10 cm of CCOSC] (CNGOA);
-		\node [right=0 cm of CNGOA,cMinistryTextStyle] {国家机关事务管理局\\National Government Offices Administration};	
+		\coordinate (CNGOA) at (CMinistryLeft |- NCOSC.south);
+		\node [below right=0 and 0 cm of CNGOA,cViceMinistryTextStyle] (NNGOA) {国家机关事务管理局\\National Government Offices Administration};
 		
-		% Administrative Institution
-		\coordinate [below=10 cm of CODUSC] (CAOSC);
-		\node [right=0 cm of CAOSC,style1] {国务院办事机构\\Administrative Offices of the State Council};
+		
+		\coordinate (CODUSCPDCCC) at (CMinistryLeft |- NNGOA.south);
+		\node [below right=0 and 0 cm of CODUSCPDCCC,cMinistryTextStyle] (NODUSCPDCCC) {中共中央宣传部\\Publicity Department of the CPC Central Committee};
+		\coordinate (CNPPA) at (CMinistryLeft |- NODUSCPDCCC.south);
+		\node [below right=0 and 0 cm of CNPPA,cMinistryTextStyle] (NNPPA) {国家新闻出版署\\National Press and Publication Administration};
+		\node [below left=0 and 0 cm of CNPPA,cAssistantTextStyle] {加挂};
+		
+		
+		\coordinate (CODUSCUFWDCCC) at (CMinistryLeft |- NNPPA.south);
+		\node [below right=0 and 0 cm of CODUSCUFWDCCC,cMinistryTextStyle] (NODUSCUFWDCCC) {中共中央统一战线工作部\\The United Front Work Department of the CPC Central Committee};		
+		\coordinate (CNRAA) at (CMinistryLeft |- NODUSCUFWDCCC.south);
+		\node [below right=0 and 0 cm of CNRAA,cViceMinistryTextStyle] (NNRAA) {国家宗教事务局\\National Religious Affairs Administration};
+		\node [below left=0 and 0 cm of CNRAA,cAssistantTextStyle] {加挂};
+	    
+	\end{tikzpicture}
+	
+	\newpage
+	
+	\begin{tikzpicture}[remember picture, overlay]
 
-        % Public institution
-		\coordinate [below=2 cm of CAOSC] (CPISC);
-		\node [right=0 cm of CPISC,style1] {国务院直属事业单位\\Public Institutions Under the State Council};
+		\coordinate (CAOSC) at (CBodyLeft |- CBodyTop);
+		\node [below right=0 and 0 cm of CAOSC,cSectionTextStyle] (NAOSC) {国务院办事机构\\Administrative Offices of the State Council};
+		\coordinate (CAOSCNorthWest) at (CBodyLeft |- NAOSC.north);
+		\coordinate (CAOSCNorthEast) at (CBodyRight |- NAOSC.north);
+		\coordinate (CAOSCSouthEast) at (CBodyRight |- NAOSC.south);
+		\coordinate (CAOSCSouthWest) at (CBodyLeft |- NAOSC.south);
+		\fill [SurfaceContainerColor] (NAOSC.north east) rectangle (CAOSCSouthEast);
+		\draw[cPrimaryLineStyle] (CAOSCSouthWest) -- (CAOSCSouthEast);
 		
-		\coordinate [below=2 cm of CPISC] (CSBAMC);
-		\node [right=0 cm of CSBAMC,style1] {国务院部委管理的国家局\\State Bureaux Administration by Ministration or Commission};
+		\coordinate (CROSC) at ($(CMinistryLeft |- NAOSC.south) + (0, -\cSectionAboveSkip)$);
+		\node [below right=0 and 0 cm of CROSC,cMinistryTextStyle] (NROSC) {国务院研究室\\Research Office of the State Council};
+		
+		
+		\coordinate (CUFWDCCC) at (CMinistryLeft |- NROSC.south);
+		\node [below right=0 and 0 cm of CUFWDCCC,cMinistryTextStyle] (NUFWDCCC) {中共中央统一战线工作部\\The United Front Work Department of the CPC Central Committee};		
+		
+		\coordinate (COCAOSC) at (CMinistryLeft |- NUFWDCCC.south);
+		\node [below right=0 and 0 cm of COCAOSC,cMinistryTextStyle] (NOCAOSC) {国务院侨务办公室\\Overseas Chinese Affairs Office of the State Council};
+		\node [below left=0 and 0 cm of COCAOSC,cAssistantTextStyle] {加挂};
+
+		\coordinate (CHKMAOCCC) at (CMinistryLeft |- NOCAOSC.south);
+		\node [below right=0 and 0 cm of CHKMAOCCC,cMinistryTextStyle] (NHKMAOCCC) {中共中央港澳工作办公室\\Hong Kong and Macao Affairs Office of the CPC Central Committee};
+
+		\coordinate (CHKMAOSC) at (CMinistryLeft |- NHKMAOCCC.south);
+		\node [below right=0 and 0 cm of CHKMAOSC,cMinistryTextStyle] (NHKMAOSC) {国务院港澳事务办公室\\Hong Kong and Macao Affairs Office of the State Council};
+		\node [below left=0 and 0 cm of NHKMAOSC.north west,cAssistantTextStyle] {加挂};
+		
+		
+		\coordinate (CTAOCCC) at (CMinistryLeft |- NHKMAOSC.south);
+		\node [below right=0 and 0 cm of CTAOCCC,cMinistryTextStyle] (NTAOCCC) {中共中央台湾工作办公室\\Taiwan Affairs Office of the CPC Central Committee};		
+
+		\coordinate (CTAOSC) at (NTAOCCC.east |- NTAOCCC.north);
+		\node [below right=0 and 0 cm of CTAOSC,cMinistryTextStyle] (NTAOSC) {国务院台湾事务办公室\\Taiwan Affairs Office of the State Council};
+		\node [below left=0 and 0 cm of CTAOSC,cAssistantTextStyle] {一个机构\\两块牌子};
+
+
+		\coordinate (COCCAC) at (CMinistryLeft |- NTAOSC.south);
+		\node [below right=0 and 0 cm of COCCAC,cMinistryTextStyle] (NOCCAC) {中央网络安全和信息化委员会办公室\\Office of the Central Cyberspace Affairs Commission};		
+
+		\coordinate (CCSC) at (NOCCAC.east |- NOCCAC.north);
+		\node [below right=0 and 0 cm of CCSC,cMinistryTextStyle] (NCSC) {中华人民共和国国家互联网信息办公室\\Cyberspace of the State Council};
+		\node [below left=0 and 0 cm of CCSC,cAssistantTextStyle] {一个机构\\两块牌子};
+		
+
+		\coordinate (CPDCCC) at (CMinistryLeft |- NCSC.south);
+		\node [below right=0 and 0 cm of CPDCCC,cMinistryTextStyle] (NPDCCC) {中共中央宣传部\\Publicity Department of the CPC Central Committee};		
+
+		\coordinate (CIOSC) at (CPDCCC |- NPDCCC.south);
+		\node [below right=0 and 0 cm of CIOSC,cMinistryTextStyle] (NIOSC) {中华人民共和国国务院新闻办公室\\Information Office of the State Council};
+		\node [below left=0 and 0 cm of CIOSC,cAssistantTextStyle] {加挂};
+
+
+
+
+
+
+		\coordinate (CPISC) at ($(CBodyLeft |- NIOSC.south) + (0, -0.2)$);
+		\node [below right=0 and 0 cm of CPISC,cSectionTextStyle] (NPISC) {国务院直属事业单位\\Public Institutions Under the State Council};
+		\coordinate (CPISCNorthWest) at (CBodyLeft |- NPISC.north);
+		\coordinate (CPISCNorthEast) at (CBodyRight |- NPISC.north);
+		\coordinate (CPISCSouthEast) at (CBodyRight |- NPISC.south);
+		\coordinate (CPISCSouthWest) at (CBodyLeft |- NPISC.south);
+		\fill [SurfaceContainerColor] (NPISC.north east) rectangle (CPISCSouthEast);
+		\draw[cPrimaryLineStyle] (CPISCSouthWest) -- (CPISCSouthEast);
+		
+		\coordinate (CXNA) at ($(CMinistryLeft |- NPISC.south) + (0, -\cSectionAboveSkip)$);
+		\node [below left=0 and 0 cm of CXNA] (NCXNAEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{新华通讯社社徽.png}};
+		\node [below right=0 and 0 cm of NCXNAEmblem.north east,cMinistryTextStyle] (NXNA) {新华通讯社\\Xinhua News Agency};
+				
+		% https://www.cas.cn/zz/yk/201410/t20141016_4225141.shtml
+		\coordinate (CCAS) at (CMinistryLeft |- NXNA.south);
+		\node [below left=0 and 0 cm of CCAS] (NCASEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国科学院院徽.png}};
+		\node [below right=0 and 0 cm of NCASEmblem.north east,cMinistryTextStyle] (NCAS) {中国科学院\\Chinese Academy of Sciences};
+		
+		\coordinate (CCASS) at (CMinistryLeft |- NCAS.south);
+		\node [below left=0 and 0 cm of CCASS] (NCASSEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国社会科学院院徽.png}};
+		\node [below right=0 and 0 cm of NCASSEmblem.north east,cMinistryTextStyle] (NCASS) {中国社会科学院\\Chinese Academy of Social Sciences};
+
+        % https://www.cae.cn/cae/html/main/col4/2024-06/26/20240626103430574571889_1.html
+		\coordinate (CCAE) at (CMinistryLeft |- NCASS.south);
+		\node [below left=0 and 0 cm of CCAE] (NCAEEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{中国工程院院徽.png}};
+		\node [below right=0 and 0 cm of NCAEEmblem.north east,cMinistryTextStyle] (NCAE) {中国工程院\\Chinese Academy of Engineering};
+				
+		\coordinate (CDRCSC) at (CMinistryLeft |- NCAE.south);
+		\node [below right=0 and 0 cm of CDRCSC,cMinistryTextStyle] (NDRCSC) {国务院发展研究中心\\Development Research Center of the State Council};
+		
+		\coordinate (CCMG) at (CMinistryLeft |- NDRCSC.south);
+		\node [below left=0 and 0 cm of CCMG] (NCMGEmblem) {\includegraphics[width=\cMinisterialLevelEmblemWidth cm]{中央广播电视总台标志.png}};
+		\node [below right=0 and 0 cm of NCMGEmblem.north east,cMinistryTextStyle] (NCMG) {中央广播电视总台\\China Media Group};
+		
+		\coordinate (CCMA) at (CMinistryLeft |- NCMG.south);
+		\node [below left=0 and 0 cm of CCMA] (NCMAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国气象局标志.png}};
+		\node [below right=0 and 0 cm of CCMA,cViceMinistryTextStyle] (NCMA) {中国气象局\\China Meteorological Administration};
+		
+		\coordinate (CPSCCC) at (CMinistryLeft |- NCMA.south);
+		\node [below right=0 and 0 cm of CPSCCC,cMinistryTextStyle] (NPSCCC) {中共中央党校\\Party School of the CPC Central Committee};
+		\coordinate (CNAG) at (NPSCCC.north east);
+		\node [below right=0 and 0 cm of CNAG,cMinistryTextStyle] (NNAG) {国家行政学院\\National Academy of Governance};	
+		\node [below left=0 and 0 cm of CNAG,cAssistantTextStyle] {一个机构\\两块牌子};
+		
+		
+		
+		
+		
+		\coordinate (CSBAMC) at ($(CBodyLeft |- NNAG.south) + (0, -0.2)$);
+		\node [below right=0 and 0 cm of CSBAMC,cSectionTextStyle] (NSBAMC) {国务院部委管理的国家局\\State Bureaux Administration by Ministration or Commission};
+		\coordinate (CSBAMCNorthWest) at (CBodyLeft |- NSBAMC.north);
+		\coordinate (CSBAMCNorthEast) at (CBodyRight |- NSBAMC.north);
+		\coordinate (CSBAMCSouthEast) at (CBodyRight |- NSBAMC.south);
+		\coordinate (CSBAMCSouthWest) at (CBodyLeft |- NSBAMC.south);
+		\fill [SurfaceContainerColor] (NSBAMC.north east) rectangle (CSBAMCSouthEast);
+		\draw[cPrimaryLineStyle] (CSBAMCSouthWest) -- (CSBAMCSouthEast);
 
 	    
 	\end{tikzpicture}
