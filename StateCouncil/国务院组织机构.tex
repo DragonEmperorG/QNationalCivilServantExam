@@ -134,11 +134,11 @@
 		\coordinate [below=2 cm of current page.north west] (CBodyTop);
    		
 		\coordinate [below=1 cm of current page.north] (CSC);
-		\node [below=0 cm of CSC,cChapterTextStyle] (NSC) at(CSC) {中华人民共和国国务院\\State Council of the People's Republic of China};
+		\node [below=0 cm of CSC,cChapterTextStyle] (NSC) {中华人民共和国国务院\\State Council of the People's Republic of China};
 	    
 	    %
-		\coordinate (CGOSC) at (CBodyLeft |- NSC.south);
-		\node [below right=0 and 0 cm of CGOSC,cSectionTextStyle,draw] (NGOSC) {中华人民共和国国务院办公厅\\General Office of the State Council of the People’s Republic of China};		
+		\coordinate (CGOSC) at ($(CBodyLeft |- NSC.south) + (0, -0.2)$);
+		\node [below right=0 and 0 cm of CGOSC,cSectionTextStyle] (NGOSC) {中华人民共和国国务院办公厅\\General Office of the State Council of the People’s Republic of China};		
 		\coordinate (CSGOSCNorthWest) at (CBodyLeft |- NGOSC.north);
 		\coordinate (CSGOSCNorthEast) at (CBodyRight |- NGOSC.north);
 		\coordinate (CSGOSCSouthEast) at (CBodyRight |- NGOSC.south);
@@ -535,7 +535,6 @@
 		
 		\coordinate (CUFWDCCC) at (CMinistryLeft |- NROSC.south);
 		\node [below right=0 and 0 cm of CUFWDCCC,cMinistryTextStyle] (NUFWDCCC) {中共中央统一战线工作部\\The United Front Work Department of the CPC Central Committee};		
-		
 		\coordinate (COCAOSC) at (CMinistryLeft |- NUFWDCCC.south);
 		\node [below right=0 and 0 cm of COCAOSC,cMinistryTextStyle] (NOCAOSC) {国务院侨务办公室\\Overseas Chinese Affairs Office of the State Council};
 		\node [below left=0 and 0 cm of COCAOSC,cAssistantTextStyle] {加挂};
@@ -548,10 +547,10 @@
 		\node [below left=0 and 0 cm of NHKMAOSC.north west,cAssistantTextStyle] {加挂};
 		
 		
-		\coordinate (CTAOCCC) at (CMinistryLeft |- NHKMAOSC.south);
-		\node [below right=0 and 0 cm of CTAOCCC,cMinistryTextStyle] (NTAOCCC) {中共中央台湾工作办公室\\Taiwan Affairs Office of the CPC Central Committee};		
+		\coordinate (CTWOCCC) at (CMinistryLeft |- NHKMAOSC.south);
+		\node [below right=0 and 0 cm of CTWOCCC,cMinistryTextStyle] (NTWOCCC) {中共中央台湾工作办公室\\Taiwan Work Office of the CPC Central Committee};		
 
-		\coordinate (CTAOSC) at (NTAOCCC.east |- NTAOCCC.north);
+		\coordinate (CTAOSC) at (NTWOCCC.east |- NTWOCCC.north);
 		\node [below right=0 and 0 cm of CTAOSC,cMinistryTextStyle] (NTAOSC) {国务院台湾事务办公室\\Taiwan Affairs Office of the State Council};
 		\node [below left=0 and 0 cm of CTAOSC,cAssistantTextStyle] {一个机构\\两块牌子};
 
