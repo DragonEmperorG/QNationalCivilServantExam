@@ -1,0 +1,140 @@
+\documentclass{article}
+
+% https://ctan.org/pkg/geometry
+% geometry – Flexible and complete interface to document dimensions
+\usepackage{geometry}
+% 5.1 Paper size
+% paper papername
+% specifies the paper size by name. paper=<paper-name>
+\geometry{a4paper}
+% landscape switches the paper orientation to landscape mode
+% \geometry{landscape}
+% 5.4 Margin size
+\geometry{left=0mm,right=0mm,top=0mm,bottom=0mm}
+% https://latexstudio.net/archives/7676 小四号 12pt 4.2175mm
+\usepackage{ctex}
+\setmainfont{Times New Roman}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{math}
+\usetikzlibrary{positioning}
+
+\thispagestyle{empty}
+
+\usepackage[dvipsnames]{xcolor}
+% https://waldyrious.net/viridis-palette-generator/
+\definecolor{MinisterialLevelColor}{HTML}{ea102c}
+\definecolor{ViceMinisterialLevelColor}{HTML}{fcce41}
+
+\usepackage{adjustbox}
+
+% 央企名录 http://www.sasac.gov.cn/n2588045/n27271785/n27271792/c14159097/content.html
+% 财政部履行出资人职责的中央企业名录 https://zcgls.mof.gov.cn/zhuantilanmu/czblz/202108/t20210817_3745862.htm
+
+\begin{document}
+
+    \newpage
+    
+	\tikzmath{
+		\compsVertivalInterval= 1.2;
+		\itemLength= 1;
+		\itemIntervalLength= 0.6;
+		\cPaperWidth = 21;
+		\cPaperHeight = 29.7;
+		\cMinisterialLevelEmblemHeight = 0.8;
+		\cViceMinisterialLevelEmblemHeight = 0.6; 
+	}
+   	
+ 	\tikzset{
+		style0/.style={
+			align=center,
+			font=\bfseries\fontsize{14}{14}\selectfont,
+		},
+		style1/.style={
+			align=left,
+			font=\bfseries\fontsize{12}{12}\selectfont
+  		},
+     	% 部级
+		cMinistryIconStyle/.style={
+            text width=0.8 cm,
+            text height=0.8 cm
+		},
+		cMinistryTextStyle/.style={
+			align=left,
+			font=\fontsize{10.5}{10.5}\selectfont,
+            text height=0.8 cm
+		},
+		cMinistryBoxStyle/.style={
+		    draw=MinisterialLevelColor,
+		    inner sep=0 cm,
+		},
+		% 副部级
+		cViceMinistryIconStyle/.style={
+            text width=0.6 cm,
+            text height=0.6 cm
+  			},
+		cViceMinistryTextStyle/.style={
+  				align=left,
+  				font=\fontsize{9}{9}\selectfont,
+  				text height=0.6 cm
+  			},
+		cViceMinistryBoxStyle/.style={
+		    draw=ViceMinisterialLevelColor,
+		    inner sep=0 cm,
+		},
+		cAssistantTextStyle/.style={
+		    draw=ViceMinisterialLevelColor,
+		    fill=white,
+		    inner sep=0.02 cm,
+            align=left,
+            font=\bfseries\fontsize{5}{5}\selectfont
+		},
+	} 	
+       		
+	\begin{tikzpicture}[remember picture, overlay]
+
+	    \fill [white] (current page.north west) rectangle (current page.south east);
+	    
+   		\draw[dashed] (21, 0) -- (21, -29.7) -- (0, -29.7); 
+   		
+		\coordinate [below=1 cm of current page.north] (CSC);
+		\node [below=0 cm of CSC,style0] (NSC) at(CSC) {中华人民共和国国务院\\State Council of the People's Republic of China};
+	    
+	    % 
+		\coordinate [below right=3 cm and 0.5 cm of current page.north west] (CGOSC);
+		\node [right=0 cm of CGOSC,style1] (NGOSC) {中华人民共和国国务院办公厅\\General Office of the State Council of the People’s Republic of China};
+		
+		\coordinate [below =0.2 cm of NGOSC.south west] (CDCSC);
+		\node [below right=0 and 0 cm of CDCSC,style1] (NDCSC) {国务院组成部门\\Departments Constituting the State Council};
+				
+		\coordinate [below=0 cm of NDCSC.south west] (CMFA);
+		\node [below right=0 and 0 cm of CMFA,cMinistryTextStyle] (NMFA) {中华人民共和国外交部\\Ministry of Foreign Affairs of the People's Republic of China};	
+			
+		\coordinate [below=0 cm of NMFA.south west] (CMND);
+		\node [below right=0 and 0 cm of CMND,cMinistryTextStyle] (NMND) {中华人民共和国国防部\\Ministry of National Defense of the People's Republic of China};
+		
+		\coordinate [below=0 cm of NMND.south west] (CMVA);
+		\node [below right=0 and 0 cm of CMVA,cMinistryTextStyle] (NMVA) {中华人民共和国退役军人事务部\\Ministry of Veterans Affairs of the People's Republic of China};
+			 
+			
+		\coordinate [below=0 cm of NMVA.south west] (CMPS);
+		\node [below right=0 and 0 cm of CMPS,cMinistryIconStyle] (NMPSEmblem) {\includegraphics[height=\cMinisterialLevelEmblemHeight cm]{人民警察警徽.png}};
+		\node [below right=0 and 0 cm of NMPSEmblem.north east,cMinistryTextStyle] (NMPS) {中华人民共和国公安部\\Ministry of Public Security of the People's Republic of China};
+		
+		% https://www.nia.gov.cn/n897453/c1397527/content.html
+		\coordinate (CNIA) at (CMPS |- NMPS.south);
+		\node [below right=0 and 0 cm of CNIA,cViceMinistryIconStyle] (NNIAEmblem) {\includegraphics[height=\cViceMinisterialLevelEmblemHeight cm]{中国移民管理标志.png}};
+		\node [below right=0 and 0 cm of NNIAEmblem.north east,cViceMinistryTextStyle] (NNIA) {国家移民管理局\\National Immigration Administration};
+		
+		\coordinate [right=0 cm of NNIA.north east] (CEEA);
+		\node [below right=0 and 0.1 cm of CEEA,cViceMinistryTextStyle] (NEEA) {中华人民共和国出入境管理局\\Exit and Entry Administration of the People's Republic of China};
+		\node [below=0 cm of CEEA,cAssistantTextStyle] at (CEEA) {加\\挂};
+		
+%		\node [cViceMinistryBoxStyle,fit=(CNIA) (NEEA)] {};
+		
+					
+	\end{tikzpicture}
+	
+\end{document}
